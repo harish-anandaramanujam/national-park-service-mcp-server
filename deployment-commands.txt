@@ -1,0 +1,1 @@
+to create virtual environment and activate - uv sync
