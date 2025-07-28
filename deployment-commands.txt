@@ -1,1 +1,2 @@
 to create virtual environment and activate - uv sync
+to install requirements.txt during project development - uv pip install -r requirements.txt
