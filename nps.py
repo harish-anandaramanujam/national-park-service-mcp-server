@@ -21,7 +21,7 @@ class ParkModelArgs(BaseModel):
 
 @mcp.tool()
 def get_park(args: ParkModelArgs):
-    """API request to NPS website to get park activites"""
+    """API request to NPS website to get retrieve data about national parks (addresses, contacts, description, hours of operation, etc.)"""
     params = {
         "parkCode": args.park_code,
         "stateCode": args.state_code,
@@ -31,10 +31,32 @@ def get_park(args: ParkModelArgs):
     headers = {
         "accept": "application/json"
     }
-    park_url = nps_api_base_url + "/parks"
+    client_url = nps_api_base_url + "/parks"
     
     try:
-        response = requests.get(park_url, params=params, headers=headers)
+        response = requests.get(client_url, params=params, headers=headers)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as err:
+        return {"error": str(err)}
+
+
+@mcp.tool()
+def get_passport_stamp_locations(args: ParkModelArgs):
+    """API request to NPS website to get retrieve locations (see "campgrounds", "places", and "visitorcenters") that have national park passport stamps."""
+    params = {
+        "parkCode": args.park_code,
+        "stateCode": args.state_code,
+        "q": args.search_term,
+        "api_key": os.getenv("NPS_API_KEY")
+    }
+    headers = {
+        "accept": "application/json"
+    }
+    client_url = nps_api_base_url + "/passportstamplocations"
+    
+    try:
+        response = requests.get(client_url, params=params, headers=headers)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as err:
