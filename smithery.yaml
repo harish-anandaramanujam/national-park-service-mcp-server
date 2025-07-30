@@ -1,16 +1,6 @@
 runtime: "container"
 build:
-  dockerfile: "Dockerfile"
-  dockerBuildPath: "."
+  dockerfile: "Dockerfile"           # Path to your Dockerfile
+  dockerBuildPath: "."               # Docker build context
 startCommand:
-  type: "http"
-  configSchema:
-    type: "object"
-    properties:
-      apiKey:
-        type: "string"
-        description: "Any API key for accessing the nps-info-server"
-        minLength: 1
-    required: ["NPS_API_KEY"]
-  exampleConfig:
-    apiKey: "demo-key" 
+  type: "http" 

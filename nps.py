@@ -65,73 +65,41 @@ def get_passport_stamp_locations(args: ParkModelArgs):
         return {"error": str(err)}
 
 
-# Extract API key from Smithery's base64-encoded config parameter
-class SmitheryConfigMiddleware:
-    def __init__(self, app):
-        self.app = app
-
-    async def __call__(self, scope, receive, send):
-        global current_api_key
-        
-        if scope.get('type') == 'http' and scope.get('path') in ['/mcp', '/mcp/']:
-            query_string = scope.get('query_string', b'').decode('utf-8')
-            print(f"Processing request with query: {query_string}")
-            if query_string:
-                params = parse_qs(query_string)
-                if 'config' in params:
-                    try:
-                        # URL decode then base64 decode config from Smithery
-                        config_b64 = unquote(params['config'][0])
-                        print(f"Config parameter (URL decoded): {config_b64}")
-                        config_json = base64.b64decode(config_b64).decode('utf-8')
-                        config = json.loads(config_json)
-                        print(f"Parsed config: {config}")
-                        
-                        # Extract API key matching smithery.yaml schema
-                        if 'apiKey' in config:
-                            current_api_key = config['apiKey']
-                            print(f"API key configured: {current_api_key[:10]}...")
-                    except (json.JSONDecodeError, Exception, IndexError, KeyError) as e:
-                        print(f"Error parsing config: {e}")
-                        current_api_key = None
-        
-        await self.app(scope, receive, send)
-
-# Handle /mcp path routing for MCP protocol
 class MCPPathRedirect:
     def __init__(self, app):
         self.app = app
 
     async def __call__(self, scope, receive, send):
-        # Redirect /mcp to /mcp/ for proper routing
         if scope.get('type') == 'http' and scope.get('path') == '/mcp':
             scope['path'] = '/mcp/'
             scope['raw_path'] = b'/mcp/'
         await self.app(scope, receive, send)
 
 if __name__ == "__main__":
-    # Setup Starlette app with CORS for cross-origin requests
+    # Get the Starlette app and add CORS middleware
     app = mcp.streamable_http_app()
     
+    # Add CORS middleware with proper header exposure for MCP session management
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=["*"],  # Configure this more restrictively in production
         allow_credentials=True,
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["*"],
-        expose_headers=["mcp-session-id"],
+        expose_headers=["mcp-session-id"],  # Allow client to read session ID
         max_age=86400,
     )
 
-    # Apply custom middleware stack
-    app = SmitheryConfigMiddleware(app)
+    # Apply the MCPPathRedirect middleware to prevent auto-redirect
     app = MCPPathRedirect(app)
 
-    # Use Smithery-required PORT environment variable
+    # Use PORT environment variable (required by Smithery)
     port = int(os.environ.get("PORT", 8080))
 
-    print("Text Utils MCP Server starting...")
-    print(f"Listening on port {port}")
-    print("Example: count_character('strawberry', 'r') -> counts r's!")
-
-    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info") 
+    # Run the MCP server with HTTP transport using uvicorn
+    uvicorn.run(
+        app,
+        host="0.0.0.0",  # Listen on all interfaces for containerized deployment
+        port=port,
+        log_level="info"
+    )
