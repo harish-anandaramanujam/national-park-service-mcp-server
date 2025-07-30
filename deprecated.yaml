@@ -1,0 +1,99 @@
+# smithery.yaml - Required for Smithery deployment
+name: nps-info-server
+version: 1.0.0
+description: National Park Service MCP Server with park information and passport stamp locations
+author: Your Name
+homepage: https://github.com/yourusername/national-park-service-mcp-server
+license: MIT
+
+# Specify HTTP transport (required for Smithery hosting)
+transport:
+  type: http
+  
+# Build configuration
+build:
+  dockerfile: Dockerfile
+  
+# Server configuration
+server:
+  port: 8080
+  endpoints:
+    mcp: /mcp
+    health: /health
+
+# Tools metadata (helps Smithery display your tools)
+tools:
+  - name: get_park
+    description: Get detailed information about national parks including addresses, contacts, descriptions, and hours of operation
+    inputSchema:
+      type: object
+      properties:
+        park_code:
+          type: string
+          description: NPS park code (e.g., 'yose' for Yosemite)
+        state_code:
+          type: string
+          description: US state code where the park is located
+        search_term:
+          type: string
+          description: Search term to filter results
+      required: []
+      
+  - name: get_passport_stamp_locations
+    description: Find locations within national parks that have passport stamp stations
+    inputSchema:
+      type: object
+      properties:
+        park_code:
+          type: string
+          description: NPS park code (e.g., 'yose' for Yosemite)
+        state_code:
+          type: string
+          description: US state code where the park is located
+        search_term:
+          type: string
+          description: Search term to filter results
+      required: []
+
+# Environment variables (users will provide these)
+environment:
+  - name: NPS_API_KEY
+    description: National Park Service API key from https://www.nps.gov/subjects/developer/
+    required: true
+    secret: true
+
+# Tags for discovery
+tags:
+  - national-parks
+  - nps
+  - travel
+  - outdoors
+  - passport-stamps
+
+---
+
+# .dockerignore - Optimize Docker builds
+__pycache__/
+*.py[cod]
+*$py.class
+.git/
+.gitignore
+README.md
+.env*
+.venv/
+venv/
+.pytest_cache/
+.coverage
+.DS_Store
+Thumbs.db
+*.log
+
+---
+
+# requirements.txt - Alternative to uv if needed
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-dotenv==1.0.0
+requests==2.31.0
+pydantic==2.5.0
+mcp==1.0.0

@@ -15,7 +15,7 @@ load_dotenv(override=True)
 # Initialize FastAPI app
 app = FastAPI(title="NPS MCP Server")
 
-# Initialize MCP server
+# Initialize MCP server (for tool registration)
 mcp = FastMCP("nps-info-server")
 nps_api_base_url = "https://developer.nps.gov/api/v1"
 
@@ -24,8 +24,8 @@ class ParkModelArgs(BaseModel):
     state_code: Optional[str] = Field(description="US state where the park is addressed")
     search_term: Optional[str] = Field(description="Term to search in the API output")
 
-@mcp.tool()
-def get_park(args: ParkModelArgs):
+# Define tools as regular functions first
+def get_park_data(args: ParkModelArgs):
     """API request to NPS website to get retrieve data about national parks (addresses, contacts, description, hours of operation, etc.)"""
     params = {
         "parkCode": args.park_code,
@@ -45,8 +45,7 @@ def get_park(args: ParkModelArgs):
     except requests.exceptions.RequestException as err:
         return {"error": str(err)}
 
-@mcp.tool()
-def get_passport_stamp_locations(args: ParkModelArgs):
+def get_passport_stamp_locations_data(args: ParkModelArgs):
     """API request to NPS website to get retrieve locations (see "campgrounds", "places", and "visitorcenters") that have national park passport stamps."""
     params = {
         "parkCode": args.park_code,
@@ -66,18 +65,44 @@ def get_passport_stamp_locations(args: ParkModelArgs):
     except requests.exceptions.RequestException as err:
         return {"error": str(err)}
 
+# Register tools with MCP (optional - for future MCP protocol compliance)
+@mcp.tool()
+def get_park(args: ParkModelArgs):
+    """API request to NPS website to get retrieve data about national parks"""
+    return get_park_data(args)
+
+@mcp.tool()
+def get_passport_stamp_locations(args: ParkModelArgs):
+    """API request to NPS website to get passport stamp locations"""
+    return get_passport_stamp_locations_data(args)
+
+# Define our tools registry manually for the HTTP endpoints
+TOOLS_REGISTRY = {
+    "get_park": {
+        "name": "get_park",
+        "description": "API request to NPS website to get retrieve data about national parks (addresses, contacts, description, hours of operation, etc.)",
+        "function": get_park_data,
+        "input_schema": ParkModelArgs.model_json_schema()
+    },
+    "get_passport_stamp_locations": {
+        "name": "get_passport_stamp_locations", 
+        "description": "API request to NPS website to get retrieve locations that have national park passport stamps",
+        "function": get_passport_stamp_locations_data,
+        "input_schema": ParkModelArgs.model_json_schema()
+    }
+}
+
 # Smithery-required endpoints
 @app.get("/mcp")
 async def mcp_get():
     """Handle GET requests to /mcp - return server info and available tools"""
     tools = []
     
-    # Get tools from MCP server
-    for tool_name, tool_info in mcp._tools.items():
+    for tool_name, tool_info in TOOLS_REGISTRY.items():
         tools.append({
-            "name": tool_name,
-            "description": tool_info.get("description", ""),
-            "inputSchema": tool_info.get("inputSchema", {})
+            "name": tool_info["name"],
+            "description": tool_info["description"],
+            "inputSchema": tool_info["input_schema"]
         })
     
     return {
@@ -100,21 +125,24 @@ async def mcp_post(request: Request):
         if not tool_name:
             raise HTTPException(status_code=400, detail="Missing 'tool' parameter")
         
+        # Check if tool exists
+        if tool_name not in TOOLS_REGISTRY:
+            available_tools = list(TOOLS_REGISTRY.keys())
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Tool '{tool_name}' not found. Available tools: {available_tools}"
+            )
+        
         # Execute the tool
-        if tool_name == "get_park":
-            result = get_park(ParkModelArgs(**args))
-        elif tool_name == "get_passport_stamp_locations":
-            result = get_passport_stamp_locations(ParkModelArgs(**args))
-        else:
-            raise HTTPException(status_code=404, detail=f"Tool '{tool_name}' not found")
+        tool_info = TOOLS_REGISTRY[tool_name]
+        args_model = ParkModelArgs(**args)
+        result = tool_info["function"](args_model)
         
         return {
             "tool": tool_name,
             "result": result,
             "status": "success"
         }
-
-        # return result
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -136,7 +164,7 @@ async def health_check():
         "status": "healthy",
         "server": "nps-info-server",
         "api_key_configured": bool(api_key),
-        "tools_count": len(mcp._tools)
+        "tools_count": len(TOOLS_REGISTRY)
     }
 
 # Root endpoint
@@ -149,7 +177,8 @@ async def root():
             "mcp": "/mcp (GET, POST, DELETE)",
             "health": "/health",
             "docs": "/docs"
-        }
+        },
+        "tools": list(TOOLS_REGISTRY.keys())
     }
 
 if __name__ == "__main__":
@@ -161,6 +190,7 @@ if __name__ == "__main__":
     
     print(f"Starting server on port {port}")
     print(f"MCP endpoint available at: http://localhost:{port}/mcp")
+    print(f"Available tools: {list(TOOLS_REGISTRY.keys())}")
     
     uvicorn.run(
         app, 
