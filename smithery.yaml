@@ -1,91 +1,16 @@
-# smithery.yaml - Updated for lazy loading
-name: nps-info-server
-version: 1.0.0
-description: National Park Service MCP Server providing park information and passport stamp locations. Requires free NPS API key.
-author: Your Name
-homepage: https://github.com/yourusername/national-park-service-mcp-server
-license: MIT
-
-# Specify HTTP transport (required for Smithery hosting)
-transport:
-  type: http
-  
-# Build configuration
+runtime: "container"
 build:
-  dockerfile: Dockerfile
-  
-# Server configuration
-server:
-  port: 8080
-  endpoints:
-    mcp: /mcp
-    health: /health
-
-# LAZY LOADING: Tools metadata (helps Smithery display your tools)
-# These definitions don't require API keys to list
-tools:
-  - name: get_park
-    description: Get detailed information about national parks including addresses, contacts, description, hours of operation, entrance fees, and more. Works with park codes (e.g. 'yose' for Yosemite), state codes, or search terms.
-    inputSchema:
-      type: object
-      properties:
-        park_code:
-          type: string
-          description: NPS park code (e.g., 'yose' for Yosemite, 'grca' for Grand Canyon)
-        state_code:
-          type: string
-          description: US state code (e.g., 'CA', 'AZ', 'UT')
-        search_term:
-          type: string
-          description: Search term to find parks by name or keywords
-      required: []
-      
-  - name: get_passport_stamp_locations
-    description: Find locations within national parks that have passport stamp stations. Passport stamps are collectible stamps available at visitor centers, campgrounds, and other park locations.
-    inputSchema:
-      type: object
-      properties:
-        park_code:
-          type: string
-          description: NPS park code (e.g., 'yose' for Yosemite, 'grca' for Grand Canyon)
-        state_code:
-          type: string
-          description: US state code (e.g., 'CA', 'AZ', 'UT')
-        search_term:
-          type: string
-          description: Search term to filter stamp locations
-      required: []
-
-# Environment variables (users will provide these when using the server)
-# IMPORTANT: These are not required for tool scanning, only for tool execution
-environment:
-  - name: NPS_API_KEY
-    description: National Park Service API key from https://www.nps.gov/subjects/developer/ (free registration required)
-    required: true
-    secret: true
-
-# Tags for discovery
-tags:
-  - national-parks
-  - nps
-  - travel
-  - outdoors
-  - passport-stamps
-  - government-data
-
-# Additional metadata
-examples:
-  - description: Get information about Yosemite National Park
-    tool: get_park
-    arguments:
-      park_code: yose
-      
-  - description: Find passport stamp locations in Grand Canyon
-    tool: get_passport_stamp_locations  
-    arguments:
-      park_code: grca
-      
-  - description: Search for parks in California
-    tool: get_park
-    arguments:
-      state_code: CA
+  dockerfile: "Dockerfile"
+  dockerBuildPath: "."
+startCommand:
+  type: "http"
+  configSchema:
+    type: "object"
+    properties:
+      apiKey:
+        type: "string"
+        description: "Any API key for accessing the nps-info-server"
+        minLength: 1
+    required: ["NPS_API_KEY"]
+  exampleConfig:
+    apiKey: "demo-key" 
