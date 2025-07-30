@@ -4,6 +4,8 @@ import requests
 from pydantic import BaseModel, Field
 from mcp.server.fastmcp import FastMCP
 from typing import Optional
+from starlette.middleware.cors import CORSMiddleware
+import uvicorn
 
 load_dotenv(override=True)
 
