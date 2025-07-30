@@ -63,7 +63,18 @@ def get_passport_stamp_locations(args: ParkModelArgs):
         return {"error": str(err)}
 
 
+# if __name__ == "__main__":
+#     mcp.run(transport="stdio")
+
+
 if __name__ == "__main__":
-    mcp.run(transport="stdio")
-
-
+    port = int(os.getenv("PORT", 8080))
+    
+    # Try to run with SSE transport for HTTP compatibility
+    try:
+        print(f"Starting MCP server on port {port}")
+        mcp.run(transport="sse", host="0.0.0.0", port=port)
+    except Exception as e:
+        print(f"SSE transport failed: {e}")
+        # Fallback to stdio
+        mcp.run(transport="stdio")
