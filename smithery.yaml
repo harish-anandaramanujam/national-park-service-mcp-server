@@ -1,6 +1,8 @@
-runtime: "container"
-build:
-  dockerfile: "Dockerfile"           # Path to your Dockerfile
-  dockerBuildPath: "."               # Docker build context
 startCommand:
-  type: "http" 
+  type: stdio
+  configSchema:
+    type: object
+    properties: {}
+  commandFunction: |-
+    (config) => ({ command: 'python', args: ['-m', 'server'] })
+  exampleConfig: {}
