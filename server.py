@@ -150,13 +150,6 @@ async def get_map_metadata_tool(args: ParkModelArgs):
     return await src.api_utils.nps_get_map_metadata(args, client_url)
 
 
-@mcp.tool()
-async def get_audios_tool(args: ParkModelArgs):
-    """Tool that Retrieve metadata relating to 
-    audio files created by national parks."""
-    
-    client_url = nps_api_base_url + "multimedia/audio"
-    return await src.api_utils.nps_get_park(args, client_url)
 
 @mcp.tool()
 async def get_audios_tool(args: ParkModelArgs):
@@ -167,7 +160,7 @@ async def get_audios_tool(args: ParkModelArgs):
     return await src.api_utils.nps_get_park(args, client_url)
 
 @mcp.tool()
-async def get_images_tool(args: ParkModelArgs):
+async def get_multimedia_galleries_tool(args: ParkModelArgs):
     """Tool that Retrieve galleries created by 
     national parks and other NPS entities."""
     
@@ -175,7 +168,7 @@ async def get_images_tool(args: ParkModelArgs):
     return await src.api_utils.nps_get_park(args, client_url)
 
 @mcp.tool()
-async def get_images_tool(args: ParkModelArgs):
+async def get_multimedia_galleries_assets_tool(args: ParkModelArgs):
     """Tool that Retrieve gallery assets by unique asset id, 
     or gallery id, etc."""
     
@@ -250,7 +243,7 @@ async def get_topics_tool(args: GeneralModelArgs):
     return await src.api_utils.nps_get_general(args, client_url)
 
 @mcp.tool()
-async def get_topics_tool(args: ParkModelArgs):
+async def get_park_specific_topics_tool(args: ParkModelArgs):
     """Tool that Retrieve categories of topics 
     (American revolution, music, women's history, etc.) 
     relating to a specific national parks."""
