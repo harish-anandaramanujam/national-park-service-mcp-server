@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from mcp.server.fastmcp import FastMCP
 from typing import Optional
 from src.app import reverse_text
-import src.nps
+import src.api_utils
 from src.models import ParkModelArgs
 
 mcp = FastMCP("nps-info-server")
@@ -48,13 +48,24 @@ NPS_API_KEY = os.getenv("NPS_API_KEY")
 
 @mcp.tool()
 async def get_park_tool(args: ParkModelArgs):
-    """Tool that could do API request to NPS website to get retrieve 
+    """Tool that could retrieve 
     data about national parks (addresses, contacts, description, 
     hours of operation, etc.)"""
     
     client_url = nps_api_base_url + "/parks"
 
-    return await src.nps.get_park(args, client_url)
+    return await src.api_utils.nps_get(args, client_url)
+
+@mcp.tool()
+async def get_passport_stamp_locations_tool(args: ParkModelArgs):
+    """Tool that could get retrieve locations (see "campgrounds",
+    "places", and "visitorcenters") that have national park
+    passport stamps."""
+    
+    client_url = nps_api_base_url + "/passportstamplocations"
+
+    return await src.api_utils.nps_get(args, client_url)
+    
 
 @mcp.tool()
 async def reverse_text_tool(text: str) -> str:
