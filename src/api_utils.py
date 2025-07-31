@@ -3,7 +3,7 @@ import requests
 import mcp
 from src.models import ParkModelArgs
 
-def nps_get(args: ParkModelArgs, client_url):
+async def nps_get(args: ParkModelArgs, client_url):
     params = {
         "parkCode": args.park_code,
         "stateCode": args.state_code,
