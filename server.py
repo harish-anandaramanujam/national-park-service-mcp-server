@@ -12,9 +12,9 @@ mcp = FastMCP("nps-info-server")
 
 nps_api_base_url = "https://developer.nps.gov/api/v1"
 
-if not os.getenv("NPS_API_KEY"):
-    load_dotenv()
-NPS_API_KEY = os.getenv("NPS_API_KEY")
+# if not os.getenv("NPS_API_KEY"):
+#     load_dotenv()
+# NPS_API_KEY = os.getenv("NPS_API_KEY")
 
 # class ParkModelArgs(BaseModel):
 #     park_code: Optional[str] = Field(description="Park code from NPS website")
