@@ -141,6 +141,56 @@ async def get_lesson_plans_tool(args: ParkModelArgs):
     return await src.api_utils.nps_get_park(args, client_url)
 
 @mcp.tool()
+async def get_map_metadata_tool(args: ParkModelArgs):
+    """Tool that Retrieve geometry boundaries for park s
+    pecified by a site code. ."""
+
+    client_url = nps_api_base_url + "/mapdata/parkboundaries/"
+
+    return await src.api_utils.nps_get_map_metadata(args, client_url)
+
+
+@mcp.tool()
+async def get_audios_tool(args: ParkModelArgs):
+    """Tool that Retrieve metadata relating to 
+    audio files created by national parks."""
+    
+    client_url = nps_api_base_url + "multimedia/audio"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_audios_tool(args: ParkModelArgs):
+    """Tool that Retrieve metadata relating to 
+    audio files created by national parks."""
+    
+    client_url = nps_api_base_url + "multimedia/audio"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_images_tool(args: ParkModelArgs):
+    """Tool that Retrieve galleries created by 
+    national parks and other NPS entities."""
+    
+    client_url = nps_api_base_url + "/multimedia/galleries"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_images_tool(args: ParkModelArgs):
+    """Tool that Retrieve gallery assets by unique asset id, 
+    or gallery id, etc."""
+    
+    client_url = nps_api_base_url + "/multimedia/galleries/assets"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_videos_tool(args: ParkModelArgs):
+    """Tool that Retrieve metadata relating to video files 
+    created by national parks."""
+    
+    client_url = nps_api_base_url + "multimedia/videos"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
 async def get_news_releases_tool(args: ParkModelArgs):
     """Tool that retrieves news releases about national parks, 
     including press releases and announcements."""
