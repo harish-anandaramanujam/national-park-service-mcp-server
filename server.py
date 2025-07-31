@@ -25,7 +25,7 @@ class ParkModelArgs(BaseModel):
     
 
 @mcp.tool()
-def get_park(args: ParkModelArgs):
+async def get_park(args: ParkModelArgs):
     """API request to NPS website to get retrieve data about national parks (addresses, contacts, description, hours of operation, etc.)"""
     params = {
         "parkCode": args.park_code,
