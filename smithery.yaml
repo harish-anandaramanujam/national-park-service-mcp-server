@@ -1,16 +1,8 @@
 startCommand:
   type: stdio
   configSchema:
-    # JSON Schema defining the configuration options for the MCP.
     type: object
-    required:
-      - npsApiKey
-    properties:
-      npsApiKey:
-        type: string
-        description: API key for accessing the NPS data
+    properties: {}
   commandFunction: |-
-    (config) => ({ command: 'python', args: ['-m', 'server'],
-    env: { NPS_API_KEY: config.npsApiKey } })
-  exampleConfig:
-    koreaWeatherApiKey: NPS_API_KEY
+    (config) => ({ command: 'python', args: ['-m', 'server'] })
+  exampleConfig: {}
