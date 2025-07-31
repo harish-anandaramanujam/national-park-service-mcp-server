@@ -140,6 +140,99 @@ async def get_lesson_plans_tool(args: ParkModelArgs):
     client_url = nps_api_base_url + "/lessonplans"
     return await src.api_utils.nps_get_park(args, client_url)
 
+@mcp.tool()
+async def get_news_releases_tool(args: ParkModelArgs):
+    """Tool that retrieves news releases about national parks, 
+    including press releases and announcements."""
+    
+    client_url = nps_api_base_url + "/newsreleases"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_parkinglots_tool(args: ParkModelArgs):
+    """Tool that Retrieve information related to parking lots 
+    created by national parks and other NPS entities.."""
+    
+    client_url = nps_api_base_url + "/parkinglots"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_people_tool(args: ParkModelArgs):
+    """Tool that retrieves information about people associated 
+    with national parks, including park rangers and 
+    scientists."""
+    
+    client_url = nps_api_base_url + "/people"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_places_tool(args: ParkModelArgs):
+    """Tool that retrieves information about places within 
+    national parks, including visitor centers, 
+    museums, and other park facilities."""
+    
+    client_url = nps_api_base_url + "/places"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_roadevents_tool(args: ParkModelArgs):
+    """Tool that Retrieve information relating to road events 
+    by park and/or type of event (incident or workzone)."""
+    
+    client_url = nps_api_base_url + "/roadevents"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_thingstodo_tool(args: ParkModelArgs):
+    """Tool that Retrieve suggested things to do recommended by 
+    and for specific national parks."""
+    
+    client_url = nps_api_base_url + "/thingstodo"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_topics_tool(args: GeneralModelArgs):
+    """Tool that Retrieve categories of topics 
+    (American revolution, music, women's history, etc.) 
+    relating to national parks.."""
+    
+    client_url = nps_api_base_url + "/topics"
+    return await src.api_utils.nps_get_general(args, client_url)
+
+@mcp.tool()
+async def get_topics_tool(args: ParkModelArgs):
+    """Tool that Retrieve categories of topics 
+    (American revolution, music, women's history, etc.) 
+    relating to a specific national parks."""
+    
+    client_url = nps_api_base_url + "/topics/parks"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_tours_tool(args: ParkModelArgs):
+    """Tool that Retrieve tours with stops at the special places, campgrounds, 
+    and visitor centers found within national parks."""
+    
+    client_url = nps_api_base_url + "/tours"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_visitor_centers_tool(args: ParkModelArgs):
+    """Tool that retrieves information about visitor centers 
+    in national parks, including descriptions, 
+    directions, and operating hours."""
+    
+    client_url = nps_api_base_url + "/visitorcenters"
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_webcams_tool(args: ParkModelArgs):
+    """Tool that retrieves information about webcams in 
+    national parks, including webcam descriptions 
+    and URLs."""
+    
+    client_url = nps_api_base_url + "/webcams"
+    return await src.api_utils.nps_get_park(args, client_url)
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")
