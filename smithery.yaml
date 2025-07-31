@@ -4,10 +4,10 @@ startCommand:
     type: object
     properties:
       npsApiKey:
-        type: "string"
+        type: string
         description: "Your API key for NPS website"
-        required: true
     required: ["npsApiKey"]
   commandFunction: |-
-    (config) => ({ command: 'python', args: ['-m', 'server'], env: { NPS_API_KEY: config.npsApiKey }  })
-  exampleConfig: {}
+    (config) => ({ command: 'python', args: ['-m', 'server'], env: { NPS_API_KEY: config.npsApiKey } })
+  exampleConfig:
+    npsApiKey: "YOUR_NPS_API_KEY_HERE"
