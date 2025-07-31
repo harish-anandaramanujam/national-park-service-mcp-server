@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from mcp.server.fastmcp import FastMCP
 from typing import Optional
 import src.api_utils
-from src.models import ParkModelArgs
+from src.models import ParkModelArgs, GeneralModelArgs
 
 mcp = FastMCP("nps-info-server")
 
@@ -25,7 +25,7 @@ async def get_park_tool(args: ParkModelArgs):
     
     client_url = nps_api_base_url + "/parks"
 
-    return await src.api_utils.nps_get(args, client_url)
+    return await src.api_utils.nps_get_park(args, client_url)
 
 @mcp.tool()
 async def get_passport_stamp_locations_tool(args: ParkModelArgs):
@@ -35,7 +35,7 @@ async def get_passport_stamp_locations_tool(args: ParkModelArgs):
     
     client_url = nps_api_base_url + "/passportstamplocations"
 
-    return await src.api_utils.nps_get(args, client_url)
+    return await src.api_utils.nps_get_park(args, client_url)
 
 
 @mcp.tool()
@@ -46,7 +46,7 @@ async def get_alerts_tool(args: ParkModelArgs):
     
     client_url = nps_api_base_url + "/alerts"
 
-    return await src.api_utils.nps_get(args, client_url)
+    return await src.api_utils.nps_get_park(args, client_url)
 
 @mcp.tool()
 async def get_articles_tool(args: ParkModelArgs):
@@ -56,7 +56,17 @@ async def get_articles_tool(args: ParkModelArgs):
     
     client_url = nps_api_base_url + "/articles"
 
-    return await src.api_utils.nps_get(args, client_url)
+    return await src.api_utils.nps_get_park(args, client_url)
+
+@mcp.tool()
+async def get_activity_list_tool(args: GeneralModelArgs):
+    """Tool that could Retrieve categories of activities 
+    (astronomy, hiking, wildlife watching, etc.) and its ID
+    possible in all national parks."""
+    
+    client_url = nps_api_base_url + "/activities"
+
+    return await src.api_utils.nps_get_general(args, client_url)
 
 
 if __name__ == "__main__":

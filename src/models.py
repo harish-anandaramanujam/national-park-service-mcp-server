@@ -6,3 +6,7 @@ class ParkModelArgs(BaseModel):
     park_code: Optional[str] = Field(description="Park code from NPS website")
     state_code: Optional[str] = Field(description="US state where the park is addressed")
     search_term: Optional[str] = Field(description="Term to search in the API output")
+
+class GeneralModelArgs(BaseModel):
+    id: Optional[str] = Field(description="One or more activity unique IDs.")
+    search_term: Optional[str] = Field(description="Term to search in the API output")
