@@ -5,8 +5,7 @@ import requests
 from pydantic import BaseModel, Field
 from mcp.server.fastmcp import FastMCP
 from typing import Optional
-from app import reverse_text
-
+from src.app import reverse_text
 
 mcp = FastMCP("nps-info-server")
 
