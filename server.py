@@ -13,5 +13,4 @@ async def reverse_text_tool(text: str) -> str:
     return reverse_text(text)
 
 if __name__ == "__main__":
-    
     mcp.run(transport="stdio")
