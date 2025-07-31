@@ -2,7 +2,12 @@ startCommand:
   type: stdio
   configSchema:
     type: object
-    properties: {}
+    properties:
+      npsApiKey:
+        type: "string"
+        description: "Your API key for NPS website"
+        required: true
+    required: ["npsApiKey"]
   commandFunction: |-
-    (config) => ({ command: 'python', args: ['-m', 'server'] })
+    (config) => ({ command: 'python', args: ['-m', 'server'], env: { NPS_API_KEY: config.npsApiKey }  })
   exampleConfig: {}
