@@ -14,11 +14,6 @@ An open-source MCP server for managing and processing data related to the Nation
 
 ## Getting Started
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v16+)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-- [PostgreSQL](https://www.postgresql.org/) or your preferred database
 
 ### Installation
 
@@ -75,6 +70,8 @@ Create a `.env` file in the root directory. Required variables include:
 NPS_API_KEY = "***"
 ```
 
+- Create NPS API key here - https://www.nps.gov/subjects/developer/get-started.htm
+- NPS API documentation - https://www.nps.gov/subjects/developer/api-documentation.htm
 
 ## Contributing
 
