@@ -17,4 +17,6 @@ ENV TRANSPORT=http
 
 COPY . .
 
+EXPOSE 8081
+
 CMD ["python", "-m", "server"]

@@ -53,11 +53,11 @@ def get_config_value(key: str, default=None):
     config = get_request_config()
     return config.get(key, default)
 
-def validate_server_access(server_token: Optional[str]) -> bool:
-    """Validate server token - accepts any string including empty ones for demo."""
-    # Validate against your server's auth system
-    # For demo purposes, we accept any non-empty token
-    return server_token is not None and len(server_token.strip()) > 0 if server_token else True
+# def validate_server_access(server_token: Optional[str]) -> bool:
+#     """Validate server token - accepts any string including empty ones for demo."""
+#     # Validate against your server's auth system
+#     # For demo purposes, we accept any non-empty token
+#     return server_token is not None and len(server_token.strip()) > 0 if server_token else True
 
 
 @mcp.tool()
@@ -65,6 +65,11 @@ async def get_park_tool(args: ParkModelArgs):
     """Tool that could retrieve 
     data about national parks (addresses, contacts, description, 
     hours of operation, etc.)"""
+    
+    api_key = get_config_value('npsApiKey') or NPS_API_KEY
+    
+    if not api_key:
+        return {"error": "NPS API key not configured"}
     
     client_url = nps_api_base_url + "/parks"
 
@@ -327,10 +332,12 @@ async def get_webcams_tool(args: ParkModelArgs):
 # src/main.py
 def main():
     transport_mode = os.getenv("TRANSPORT", "stdio")
+
+    transport_mode = "http"
     
     if transport_mode == "http":
         # HTTP mode with config extraction from URL parameters
-        print("Character Counter MCP Server starting in HTTP mode...")
+        print("NPS MCP Server starting in HTTP mode...")
         
         # Setup Starlette app with CORS for cross-origin requests
         app = mcp.streamable_http_app()
@@ -358,7 +365,7 @@ def main():
     else:
         # Optional: add stdio transport for backwards compatibility
         # You can publish this to uv for users to run locally
-        print("Character Counter MCP Server starting in stdio mode...")
+        print("NPS MCP Server starting in stdio mode...")
         
         server_token = os.getenv("NPS_API_KEY")
         # Set the server token for stdio mode (can be None)
