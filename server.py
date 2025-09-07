@@ -73,7 +73,7 @@ async def get_park_tool(args: ParkModelArgs):
     
     client_url = nps_api_base_url + "/parks"
 
-    return await src.api_utils.nps_get_park(args, client_url)
+    return await src.api_utils.nps_get_park(args, client_url, api_key)
 
 @mcp.tool()
 async def get_passport_stamp_locations_tool(args: ParkModelArgs):
