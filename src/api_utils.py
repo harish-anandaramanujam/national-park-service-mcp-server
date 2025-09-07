@@ -3,12 +3,13 @@ import requests
 import mcp
 from src.models import ParkModelArgs, GeneralModelArgs
 
-async def nps_get_park(args: ParkModelArgs, client_url):
+async def nps_get_park(args: ParkModelArgs, client_url, api_key):
     params = {
         "parkCode": args.park_code,
         "stateCode": args.state_code,
         "q": args.search_term,
-        "api_key": os.getenv("NPS_API_KEY")
+        # "api_key": os.getenv("NPS_API_KEY")
+        "api_key": api_key
     }
     headers = {
         "accept": "application/json"
