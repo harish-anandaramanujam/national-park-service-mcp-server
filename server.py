@@ -278,4 +278,5 @@ async def get_webcams_tool(args: ParkModelArgs):
     return await src.api_utils.nps_get_park(args, client_url)
 
 if __name__ == "__main__":
-    mcp.run(transport="stdio")
+    # mcp.run(transport="stdio")
+    mcp.run(transport="http", host="0.0.0.0", port=8080)
